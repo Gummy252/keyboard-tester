@@ -5,6 +5,9 @@ const dateTimeDisplay = document.getElementById('datetime-display');
 const testedCountDisplay = document.getElementById('tested-count');
 const resetBtn = document.getElementById('reset-trigger');
 const historyLog = document.getElementById('history-log');
+const modal = document.getElementById('legal-modal');
+const mTitle = document.getElementById('modal-title');
+const mBody = document.getElementById('modal-body');
 
 const mouseLeft = document.getElementById('mouse-left');
 const mouseWheel = document.getElementById('mouse-wheel');
@@ -39,116 +42,81 @@ const testedKeysSet = new Set();
 const TOTAL_KEYS = 104;
 
 function initClock() {
-    const updateTime = () => {
+    setInterval(() => {
         const now = new Date();
-        const dateStr = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0');
-        const timeStr = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0') + ':' + String(now.getSeconds()).padStart(2, '0');
-        const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-        if(dateTimeDisplay) dateTimeDisplay.textContent = `${dateStr} | ${timeStr} [${timeZone}]`;
-    };
-    setInterval(updateTime, 1000);
-    updateTime();
+        dateTimeDisplay.textContent = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')} | ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}:${String(now.getSeconds()).padStart(2,'0')} [${Intl.DateTimeFormat().resolvedOptions().timeZone}]`;
+    }, 1000);
 }
 
 function initKeyboard() {
-    Object.values(containers).forEach(container => container.innerHTML = '');
+    Object.values(containers).forEach(c => c.innerHTML = '');
     LAYOUT.forEach(item => {
-        const keyDiv = document.createElement('div');
-        keyDiv.className = 'key';
-        keyDiv.textContent = item.label;
-        keyDiv.setAttribute('data-code', item.code);
-        containers[item.section].appendChild(keyDiv);
-        keyElementsMap.set(item.code, keyDiv);
+        const div = document.createElement('div');
+        div.className = 'key'; div.textContent = item.label; div.setAttribute('data-code', item.code);
+        containers[item.section].appendChild(div);
+        keyElementsMap.set(item.code, div);
     });
 }
 
-function playKeySound() {
-    const clone = CLICK_SOUND.cloneNode();
-    clone.volume = 0.4;
-    clone.play().catch(() => {}); 
-}
-
-function updateTestedCount() {
-    testedCountDisplay.textContent = `${testedKeysSet.size} / ${TOTAL_KEYS}`;
-}
-
-// ---------------------------------------------------------
-// EVENT LOG ENGINE (Strict 5 Item Limit)
-// ---------------------------------------------------------
-function appendLog(eventName, eventCode, type) {
+function appendLog(name, code, type) {
     const entry = document.createElement('div');
     entry.className = `log-entry ${type}`;
-    
-    const now = new Date();
-    const timeString = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}:${String(now.getSeconds()).padStart(2,'0')}.${String(now.getMilliseconds()).padStart(3,'0')}`;
-
-    entry.innerHTML = `<span>[${timeString}] ${type.toUpperCase()}</span> <span>${eventName} (${eventCode})</span>`;
-    
+    const t = new Date();
+    entry.innerHTML = `<span>[${String(t.getHours()).padStart(2,'0')}:${String(t.getMinutes()).padStart(2,'0')}:${String(t.getSeconds()).padStart(2,'0')}] ${type.toUpperCase()}</span> <span>${name} (${code})</span>`;
     historyLog.prepend(entry);
-
-    if (historyLog.children.length > 5) {
-        historyLog.removeChild(historyLog.lastChild);
-    }
+    if (historyLog.children.length > 5) historyLog.removeChild(historyLog.lastChild);
 }
 
-window.addEventListener('contextmenu', (e) => e.preventDefault());
-
 window.addEventListener('keydown', (e) => {
-    const blockedKeys = ["Tab", "F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10", "F11", "F12", "AltLeft", "AltRight", "Enter", "NumpadEnter", "PrintScreen", "MetaLeft", "MetaRight", "ContextMenu"];
-    if (blockedKeys.includes(e.code)) e.preventDefault();
-
+    const blocked = ["Tab", "F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10", "F11", "F12", "MetaLeft", "ContextMenu"];
+    if (blocked.includes(e.code)) e.preventDefault();
     const el = keyElementsMap.get(e.code);
     if (el && !el.classList.contains('active')) {
-        playKeySound();
+        const s = CLICK_SOUND.cloneNode(); s.volume = 0.3; s.play().catch(()=>{});
         el.classList.add('active', 'tested');
-        
-        if (!testedKeysSet.has(e.code)) {
-            testedKeysSet.add(e.code);
-            updateTestedCount();
-        }
-
+        testedKeysSet.add(e.code);
+        testedCountDisplay.textContent = `${testedKeysSet.size} / ${TOTAL_KEYS}`;
         appendLog(e.key === " " ? "Space" : e.key, e.code, "keydown");
     }
 });
 
 window.addEventListener('keyup', (e) => {
     const el = keyElementsMap.get(e.code);
-    if (el) {
-        el.classList.remove('active');
-        appendLog(e.key === " " ? "Space" : e.key, e.code, "keyup");
-    }
+    if (el) { el.classList.remove('active'); appendLog(e.key === " " ? "Space" : e.key, e.code, "keyup"); }
 });
 
 window.addEventListener('mousedown', (e) => {
-    if (e.target.tagName === 'BUTTON') return; 
-    if (e.button === 0) { mouseLeft.classList.add('active', 'tested'); appendLog("Left Click", "Mouse0", "keydown"); }
-    if (e.button === 1) { mouseWheel.classList.add('active', 'tested'); appendLog("Middle Click", "Mouse1", "keydown"); e.preventDefault(); }
-    if (e.button === 2) { mouseRight.classList.add('active', 'tested'); appendLog("Right Click", "Mouse2", "keydown"); }
+    if (e.target.tagName === 'BUTTON' || e.target.tagName === 'A') return;
+    if (e.button === 0) { mouseLeft.classList.add('active', 'tested'); appendLog("Left Click", "M0", "keydown"); }
+    if (e.button === 1) { mouseWheel.classList.add('active', 'tested'); appendLog("Middle Click", "M1", "keydown"); e.preventDefault(); }
+    if (e.button === 2) { mouseRight.classList.add('active', 'tested'); appendLog("Right Click", "M2", "keydown"); }
 });
 
 window.addEventListener('mouseup', (e) => {
-    if (e.button === 0) { mouseLeft.classList.remove('active'); appendLog("Left Click", "Mouse0", "keyup"); }
-    if (e.button === 1) { mouseWheel.classList.remove('active'); appendLog("Middle Click", "Mouse1", "keyup"); }
-    if (e.button === 2) { mouseRight.classList.remove('active'); appendLog("Right Click", "Mouse2", "keyup"); }
+    if (e.button === 0) mouseLeft.classList.remove('active');
+    if (e.button === 1) mouseWheel.classList.remove('active');
+    if (e.button === 2) mouseRight.classList.remove('active');
 });
 
-window.addEventListener('wheel', (e) => {
-    mouseWheel.classList.add('tested');
-    const direction = e.deltaY > 0 ? "Scroll Down" : "Scroll Up";
-    appendLog(direction, "Wheel", "keydown");
-});
+window.addEventListener('wheel', () => { mouseWheel.classList.add('tested'); });
+window.addEventListener('contextmenu', (e) => e.preventDefault());
 
 resetBtn.onclick = () => {
     keyElementsMap.forEach(el => el.classList.remove('active', 'tested'));
-    mouseLeft.classList.remove('active', 'tested');
-    mouseWheel.classList.remove('active', 'tested');
-    mouseRight.classList.remove('active', 'tested');
-    
-    historyLog.innerHTML = '';
-    testedKeysSet.clear();
-    updateTestedCount();
-    appendLog("System", "Reset", "keydown");
+    [mouseLeft, mouseWheel, mouseRight].forEach(m => m.classList.remove('active', 'tested'));
+    historyLog.innerHTML = ''; testedKeysSet.clear(); testedCountDisplay.textContent = `0 / ${TOTAL_KEYS}`;
 };
 
-initClock();
-initKeyboard();
+function showModal(type) {
+    modal.style.display = 'flex';
+    if(type === 'privacy') {
+        mTitle.textContent = 'Privacy Policy';
+        mBody.innerHTML = `KeyTester.site values your privacy. This tool processes your keyboard and mouse inputs <strong>locally in your browser</strong>. We do not store, record, or transmit your keystrokes to any external servers. We use third-party services like Google AdSense to serve advertisements, which may use cookies to analyze traffic.`;
+    } else {
+        mTitle.textContent = 'Terms of Service';
+        mBody.innerHTML = `By using KeyTester.site, you agree that this tool is provided "as is" for testing purposes. We are not responsible for any hardware issues or data loss that may occur. Users are prohibited from using this tool for any malicious activities.`;
+    }
+}
+function closeModal() { modal.style.display = 'none'; }
+
+initClock(); initKeyboard();
