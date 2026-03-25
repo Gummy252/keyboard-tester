@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Free online mechanical keyboard and mouse tester. Check your keys, anti-ghosting, and mouse clicks instantly.">
+    <title>Online Keyboard & Mouse Tester Tool</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div id="datetime-display" class="hud-datetime">--/--/---- --:--:--</div>
+
+    <div class="global-layout">
+        
+        <aside class="ad-sidebar">
+            <div class="ad-vertical">
+                <span class="ad-label">AD (160x600)</span>
+                </div>
+        </aside>
+
+        <main class="main-content">
+            
+            <div class="welcome-header">
+                <h1 class="welcome-text">WELCOME TO KEYBOARD TESTER</h1>
+                <span class="party-emoji">🎉⌨️✨</span>
+            </div>
+
+            <div class="ad-horizontal">
+                <span class="ad-label">ADVERTISEMENT (728x90)</span>
+                </div>
+
+            <div class="dashboard">
+                <div class="stats-panel">
+                    <div class="stat-box">
+                        <span class="label">TESTED KEYS</span>
+                        <span id="tested-count" class="value">0 / 104</span>
+                    </div>
+                    <button id="reset-trigger" class="reset-btn">RESET TEST</button>
+                </div>
+
+                <div class="mouse-tester">
+                    <div class="mouse-btn" id="mouse-left">LEFT CLICK</div>
+                    <div class="mouse-wheel" id="mouse-wheel">SCROLL</div>
+                    <div class="mouse-btn" id="mouse-right">RIGHT CLICK</div>
+                </div>
+            </div>
+
+            <div class="hardware-module">
+                
+                <div class="keyboard-chassis">
+                    <div id="main-section" class="key-section main-block"></div>
+                    <div id="nav-section" class="key-section nav-block"></div>
+                    <div id="numpad-section" class="key-section numpad-block"></div>
+                </div>
+
+                <div class="log-container">
+                    <div class="log-header">LIVE INPUT TERMINAL (LAST 5 EVENTS)</div>
+                    <div id="history-log" class="history-log">
+                        </div>
+                </div>
+
+            </div>
+        </main>
+
+        <aside class="ad-sidebar">
+            <div class="ad-vertical">
+                <span class="ad-label">AD (160x600)</span>
+                </div>
+        </aside>
+
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
