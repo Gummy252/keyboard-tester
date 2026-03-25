@@ -35,43 +35,127 @@ body {
     animation: flow 4s linear infinite;
 }
 
+/* --- MAIN CONTENT CENTER --- */
+.main-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* TÜM İÇERİĞİ YATAYDA TAM ORTALAR */
+    width: 100%;
+    max-width: 1250px;
+    text-align: center;
+}
+
+.welcome-header {
+    display: flex;
+    flex-direction: column; /* Emoji ve metni alt alta alarak daha iyi ortalar */
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 30px;
+}
+
 .welcome-text {
-    font-size: 2.2rem; font-weight: 800;
+    font-size: 2.2rem; 
+    font-weight: 800;
+    margin: 0;
+    letter-spacing: -1px;
     background: linear-gradient(90deg, #ff007f, #00ffff, #ff007f);
     background-size: 200% auto;
-    -webkit-background-clip: text; background-clip: text;
+    -webkit-background-clip: text; 
+    background-clip: text;
     -webkit-text-fill-color: transparent;
     animation: flow 4s linear infinite;
 }
 
 @keyframes flow { 0% { background-position: 0% center; } 100% { background-position: 200% center; } }
 
-/* --- LAYOUT --- */
-.global-layout { display: flex; gap: 80px; align-items: flex-start; max-width: 1800px; }
-.ad-sidebar { margin-top: 100px; }
-.ad-vertical { width: 160px; height: 600px; background: #101216; border: 1px dashed #333; display: flex; align-items: center; justify-content: center; border-radius: 6px; position: sticky; top: 40px; }
-.ad-horizontal { width: 728px; height: 90px; background: #101216; border: 1px dashed #333; display: flex; align-items: center; justify-content: center; margin-bottom: 30px; border-radius: 6px; }
+/* --- ADVERTISING --- */
+.ad-horizontal {
+    width: 728px;
+    height: 90px;
+    background: #101216;
+    border: 1px dashed #333;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 40px auto; /* Üstten ve alttan dengeli boşluk, ortalanmış */
+    border-radius: 6px;
+}
+
+.ad-sidebar { margin-top: 150px; } /* Yan reklamları başlığın biraz daha altına iter */
+
+.ad-vertical { 
+    width: 160px; height: 600px; 
+    background: #101216; border: 1px dashed #333; 
+    display: flex; align-items: center; justify-content: center; 
+    border-radius: 6px; position: sticky; top: 40px; 
+}
+
 .ad-label { color: #444; font-size: 11px; letter-spacing: 1px; }
 
-/* --- DASHBOARD & MODULE --- */
-.dashboard { display: flex; gap: 30px; margin-bottom: 25px; }
-.stats-panel, .mouse-tester { background: var(--panel); padding: 15px 25px; border-radius: 8px; border: 1px solid #1f232e; display: flex; align-items: center; gap: 25px; }
-.stat-box .label { font-size: 11px; color: var(--text-muted); }
+/* --- DASHBOARD & LAYOUT --- */
+.global-layout { 
+    display: flex; 
+    gap: 100px; /* Yan reklamlar ile klavye arasını biraz daha açarak ferahlatır */
+    align-items: flex-start; 
+    max-width: 1800px; 
+}
+
+.dashboard { 
+    display: flex; 
+    gap: 30px; 
+    margin-bottom: 40px; /* Dashboard ile klavye arasını açar */
+    justify-content: center; 
+    width: 100%;
+}
+
+.stats-panel, .mouse-tester { 
+    background: var(--panel); 
+    padding: 15px 25px; 
+    border-radius: 8px; 
+    border: 1px solid #1f232e; 
+    display: flex; 
+    align-items: center; 
+    gap: 25px; 
+}
+
+.stat-box .label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; }
 .stat-box .value { font-size: 24px; font-weight: bold; color: var(--accent); font-family: monospace; }
-.reset-btn { background: transparent; border: 1px solid #444; color: var(--text-muted); padding: 10px 20px; cursor: pointer; border-radius: 4px; font-weight: 600; }
+
+.reset-btn { 
+    background: transparent; 
+    border: 1px solid #444; 
+    color: var(--text-muted); 
+    padding: 10px 20px; 
+    cursor: pointer; 
+    border-radius: 4px; 
+    font-weight: 600; 
+    transition: 0.2s;
+}
 .reset-btn:hover { background: #e63946; color: white; border-color: #e63946; }
 
+/* Mouse UI */
 .mouse-btn { width: 90px; height: 50px; background: var(--key-idle); border-radius: 6px 6px 20px 20px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: bold; color: var(--text-muted); border-bottom: 4px solid #000; }
 .mouse-wheel { width: 50px; height: 50px; background: var(--key-idle); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: bold; color: var(--text-muted); border-bottom: 4px solid #000; }
 .mouse-btn.active, .mouse-wheel.active { background: var(--accent); color: #000; transform: translateY(3px); border-bottom: 0; }
 .mouse-btn.tested, .mouse-wheel.tested { background: var(--tested); color: var(--accent); }
 
-.hardware-module { display: flex; flex-direction: column; border-radius: 12px; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
-.keyboard-chassis { display: flex; gap: 20px; background: #111318; padding: 25px; border: 1px solid #222; border-bottom: none; }
+/* --- HARDWARE MODULE --- */
+.hardware-module { 
+    display: flex; 
+    flex-direction: column; 
+    border-radius: 12px; 
+    overflow: hidden; 
+    box-shadow: 0 25px 50px rgba(0,0,0,0.6); 
+    width: fit-content; /* Kasanın içeriğe göre daralmasını sağlar */
+    margin: 0 auto;
+}
+
+.keyboard-chassis { display: flex; gap: 20px; background: #111318; padding: 30px; border: 1px solid #222; border-bottom: none; }
 .log-container { background: #0d0f13; border: 1px solid #222; border-top: 1px dashed #333; }
-.log-header { background: #0a0b0e; padding: 8px 25px; font-size: 10px; color: #555; font-weight: bold; letter-spacing: 2px; }
+.log-header { background: #0a0b0e; padding: 10px 25px; font-size: 10px; color: #555; font-weight: bold; letter-spacing: 2px; }
 .history-log { height: 145px; padding: 10px 25px 20px 25px; display: flex; flex-direction: column; gap: 5px; }
-.log-entry { font-family: monospace; font-size: 13px; color: #a0aabf; padding: 5px 10px; background: rgba(255, 255, 255, 0.02); border-radius: 4px; display: flex; justify-content: space-between; border-left: 3px solid transparent; }
+
+.log-entry { font-family: monospace; font-size: 13px; color: #a0aabf; padding: 6px 12px; background: rgba(255, 255, 255, 0.02); border-radius: 4px; display: flex; justify-content: space-between; border-left: 3px solid transparent; }
 .log-entry.keydown { border-left-color: var(--accent); }
 .log-entry.keyup { border-left-color: #e63946; opacity: 0.6; }
 
@@ -104,13 +188,13 @@ body {
 .key[data-code="Numpad0"] { grid-column: 1 / span 2; width: 106px; }
 
 /* --- FOOTER & MODAL --- */
-.site-footer { margin-top: 40px; padding: 20px; text-align: center; border-top: 1px dashed #222; width: 100%; }
-.footer-links { display: flex; justify-content: center; gap: 25px; margin-bottom: 15px; }
-.footer-links a { color: var(--text-muted); text-decoration: none; font-size: 12px; }
+.site-footer { margin-top: 60px; padding: 20px; text-align: center; border-top: 1px dashed #222; width: 100%; }
+.footer-links { display: flex; justify-content: center; gap: 30px; margin-bottom: 15px; }
+.footer-links a { color: var(--text-muted); text-decoration: none; font-size: 13px; }
 .footer-links a:hover { color: var(--accent); }
 .copyright { color: #444; font-size: 11px; }
 
 .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); display: none; justify-content: center; align-items: center; z-index: 1000; }
-.modal-content { background: var(--panel); width: 90%; max-width: 600px; padding: 40px; border-radius: 12px; border: 1px solid var(--accent); position: relative; }
+.modal-content { background: var(--panel); width: 95%; max-width: 600px; padding: 40px; border-radius: 12px; border: 1px solid var(--accent); position: relative; }
 .modal-text { color: var(--text-muted); line-height: 1.6; font-size: 14px; max-height: 400px; overflow-y: auto; text-align: left; }
 .close-btn { position: absolute; top: 15px; right: 20px; font-size: 30px; cursor: pointer; color: var(--text-muted); }
